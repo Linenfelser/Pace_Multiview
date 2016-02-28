@@ -13,11 +13,15 @@ import AudioToolbox
 class ViewController2: UIViewController, CLLocationManagerDelegate {
 
     
-    @IBOutlet weak var speedLabel: UILabel!
+    //@IBOutlet weak var speedLabel: UILabel!
     @IBOutlet weak var paceLabel2: UILabel!
     @IBOutlet weak var userPaceLabel: UILabel!
     @IBOutlet weak var userDistanceTraveledLabel: UILabel!
     @IBOutlet weak var averagePaceLabel: UILabel!
+    @IBOutlet weak var timeLeftLabel: UILabel!
+    
+    var timeRemaining: Float = 0.0
+    
     
     let locationManager = CLLocationManager()
     var mySpeed = 0.0
@@ -52,7 +56,7 @@ class ViewController2: UIViewController, CLLocationManagerDelegate {
         mySpeed = locationManager.location!.speed
         //convert mps to mph
         mySpeed *= 2.2394
-        speedLabel.text = "\(mySpeed)" + " mph"
+        //speedLabel.text = "\(mySpeed)" + " mph"
         
         mySpeedTemp = mySpeed/60
         
@@ -60,14 +64,14 @@ class ViewController2: UIViewController, CLLocationManagerDelegate {
         
         //not moving... cant div by 0
         if mySpeed == 0{
-            userPaceLabel.text = "\(0)" + " minute mile (mpm)"
+            userPaceLabel.text = "\(0)"
         }else{
             myPace = 1/mySpeed //hours per mile
             myPace *= 60 //minutes per mile
             
 //            print("____mySpeed____", mySpeed)
 //            print("____myPace_____", myPace)
-            userPaceLabel.text = "\(myPace)" + " minute mile"
+            userPaceLabel.text = "\(myPace)"
             
             
         }
@@ -82,6 +86,7 @@ class ViewController2: UIViewController, CLLocationManagerDelegate {
                 startLocation = locations.first! as CLLocation
                 
             } else {
+                updateTime()
                 //start updating distance
                 let lastLocation = locations.last! as CLLocation
                 let distance = startLocation.distanceFromLocation(lastLocation)
@@ -92,19 +97,12 @@ class ViewController2: UIViewController, CLLocationManagerDelegate {
                 userDistanceTraveledLabel.text = "\(distanceTraveledMiles)"
                 
                 counter++
-                print("_____COUNTER_____", counter)
                 paceAverage += myPace //divide by counter is below... need to cast to doubles
                 // if the user is not running
-                print("___myPace)__", myPace)
-                print("__paceAverage__", paceAverage)
+               
                 paceAverageFinal = Double(paceAverage) / Double(counter)
-                
-                print("\n")
-                print("___paceAverageFinal", paceAverageFinal)
-                
                 averagePaceLabel.text = "\(paceAverageFinal)"
-                print("______paceValue", paceValue)
-                print("\n")
+        
                 if(counter%10 == 0){
                     if(paceAverageFinal > paceValue){
                         alertUserTooSlow()
@@ -112,7 +110,6 @@ class ViewController2: UIViewController, CLLocationManagerDelegate {
                 }
             }
         }
-        //counter++
     }
     
     func alertUserTooSlow(){
@@ -120,11 +117,21 @@ class ViewController2: UIViewController, CLLocationManagerDelegate {
         AudioServicesPlayAlertSound(SystemSoundID(kSystemSoundID_Vibrate))
     }
     
+    func updateTime(){
+        if myValue == true{
+            if timeRemaining > 0{
+                timeLeftLabel.text = String(timeRemaining--)
+            }
+        }
+        
+    }
+    
     
     override func viewDidLoad() {
         //var myTimer = NSTimer()
         
         super.viewDidLoad()
+        _ = NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector: "updateTime", userInfo: nil, repeats: true)
         
         paceLabel2.text = paceLabelText
         

@@ -18,7 +18,7 @@ class ViewController: UIViewController {
     @IBOutlet weak var paceLabel: UILabel!
     var paceMinPerMile: Double = 0.0
     //var pacePassValue: Double = 0.0
-    
+    var desiredTime: Float = 0.0
 
     @IBAction func getPaceButton(sender: AnyObject) {
         let d = (userDistance.text! as NSString).floatValue
@@ -31,7 +31,9 @@ class ViewController: UIViewController {
         let paceMinPerMile = paceSecPerMile/60
         //paceLabel.text = "\(paceMinPerMile)" + " min/mile"
         paceLabel.text = "\(paceMinPerMile)"
-            }
+        
+        desiredTime = (h*3600)+(m*60)+(s)
+        }
     
     //http://stackoverflow.com/questions/24126678/close-ios-keyboard-by-touching-anywhere-using-swift
     func dismissKeyboard() {
@@ -62,6 +64,7 @@ class ViewController: UIViewController {
         //pacePassValue = Double(paceMinPerMile)
         DestViewController.paceLabelText = paceLabel.text!
         DestViewController.paceValue = paceMinPerMile
+        DestViewController.timeRemaining = desiredTime
 //        DestViewController.paceValue = 10
     }
 
