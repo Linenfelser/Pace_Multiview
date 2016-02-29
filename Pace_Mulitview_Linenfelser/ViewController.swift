@@ -26,10 +26,18 @@ class ViewController: UIViewController {
         let m = (userMinutes.text! as NSString).floatValue
         let s = (userSeconds.text! as NSString).floatValue
         
+        
+        
         let paceSec = (h * (60*60)) + (m * 60) + s
         let paceSecPerMile = paceSec/d
         let paceMinPerMile = paceSecPerMile/60
         //paceLabel.text = "\(paceMinPerMile)" + " min/mile"
+        if (d == 0 || (h+m+s == 0)){
+            let alertController = UIAlertController(title: "Error", message:
+                "Please enter valid distance", preferredStyle: UIAlertControllerStyle.Alert)
+            alertController.addAction(UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.Default,handler: nil))
+            self.presentViewController(alertController, animated: true, completion: nil)
+        }
         paceLabel.text = "\(paceMinPerMile)"
         
         desiredTime = (h*3600)+(m*60)+(s)

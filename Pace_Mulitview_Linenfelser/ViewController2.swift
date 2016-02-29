@@ -45,13 +45,19 @@ class ViewController2: UIViewController, CLLocationManagerDelegate {
     
     @IBAction func runValue(sender: AnyObject) {
         myValue = true
+        updateTime()
+    }
+    
+    @IBAction func stopRun(sender: AnyObject) {
+        myValue = false
+        myTimer.invalidate()
     }
     
     
     func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         
         let locValue:CLLocationCoordinate2D = (manager.location?.coordinate)!
-        print("lcoations = \(locValue.latitude) \(locValue.longitude)")
+        print("locations = \(locValue.latitude) \(locValue.longitude)")
         
         mySpeed = locationManager.location!.speed
         //convert mps to mph
@@ -71,7 +77,7 @@ class ViewController2: UIViewController, CLLocationManagerDelegate {
             
 //            print("____mySpeed____", mySpeed)
 //            print("____myPace_____", myPace)
-            userPaceLabel.text = "\(myPace)"
+            userPaceLabel.text = "\(Double(round(1000*myPace)/1000))"
             
             
         }
@@ -86,7 +92,7 @@ class ViewController2: UIViewController, CLLocationManagerDelegate {
                 startLocation = locations.first! as CLLocation
                 
             } else {
-                updateTime()
+                //updateTime()
                 //start updating distance
                 let lastLocation = locations.last! as CLLocation
                 let distance = startLocation.distanceFromLocation(lastLocation)
@@ -94,14 +100,14 @@ class ViewController2: UIViewController, CLLocationManagerDelegate {
                 distanceTraveled += distance
                 distanceTraveledMiles = distanceTraveled * 0.000621371
                 //print("__distanceTraveledAFTERconversion__", distanceTraveled)
-                userDistanceTraveledLabel.text = "\(distanceTraveledMiles)"
+                userDistanceTraveledLabel.text = "\(Double(round(1000*distanceTraveledMiles)/1000))"
                 
                 counter++
                 paceAverage += myPace //divide by counter is below... need to cast to doubles
                 // if the user is not running
                
                 paceAverageFinal = Double(paceAverage) / Double(counter)
-                averagePaceLabel.text = "\(paceAverageFinal)"
+                averagePaceLabel.text = "\(Double(round(1000*paceAverageFinal)/1000))"
         
                 if(counter%10 == 0){
                     if(paceAverageFinal > paceValue){
@@ -124,6 +130,11 @@ class ViewController2: UIViewController, CLLocationManagerDelegate {
             }
         }
         
+    }
+    
+    func secondsToFormatted(seconds: Int) -> (Int,Int,Int){
+        //return (seconds / 3600, (seconds % 3600) / 60, (seconds % 3600) % 60)
+        timeLeftLabel.text = String((seconds / 3600, (seconds % 3600) / 60, (seconds % 3600) % 60))
     }
     
     
